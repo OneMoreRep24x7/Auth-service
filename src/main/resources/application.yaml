@@ -1,0 +1,24 @@
+spring:
+  application:
+    name: auth-service
+  config:
+    import: "optional:configserver:http://localhost:8888"
+  datasource:
+    url: jdbc:mysql://localhost:3306/auth?createDatabaseIfNotExist=true
+    username: root
+    password: Jeshma2022
+    jpa:
+      show-sql: true
+      hibernate:
+        ddl-auto: update
+
+eureka:
+  instance:
+    host: localhost
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+
+server:
+  port: 8080
+
