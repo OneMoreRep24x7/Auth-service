@@ -1,5 +1,6 @@
 package com.ashish.Authservice.configuration;
 
+import com.ashish.Authservice.token.TokenRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -23,6 +24,8 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
     private JwtService jwtService;
     @Autowired
     private UserDetailsService userDetailsService;
+    @Autowired
+    private TokenRepository tokenRepository;
     @Override
     protected void doFilterInternal(
             @NotNull  HttpServletRequest request,
@@ -32,16 +35,19 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
             final String authHeader = request.getHeader("Authorization");
             final String jwt;
             final String userEmail;
-            if(authHeader == null || !authHeader.startsWith("Bearer")){
+            if(authHeader == null || !authHeader.startsWith("Bearer ")){
                 filterChain.doFilter(request,response);
                 return;
             }
-            jwt = authHeader.substring(7);
-            userEmail = jwtService.extractUserName(jwt); // need to extract it from the JWT Token
-        if(userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null){
+                jwt = authHeader.substring(7);
+                userEmail = jwtService.extractUserName(jwt); // need to extract it from the JWT Token
+            if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = userDetailsService.loadUserByUsername(userEmail);
-            if(jwtService.isTokenValid(jwt,userDetails)){
-                UsernamePasswordAuthenticationToken  authToken = new UsernamePasswordAuthenticationToken(
+            var isTokenValid = tokenRepository.findByToken(jwt)
+                    .map(token -> !token.isExpired() && !token.isRevoked())
+                    .orElse(false);
+            if (jwtService.isTokenValid(jwt, userDetails) && isTokenValid) {
+                UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                         userDetails,
                         null,
                         userDetails.getAuthorities()
