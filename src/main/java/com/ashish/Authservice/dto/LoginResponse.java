@@ -1,7 +1,6 @@
 package com.ashish.Authservice.dto;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.ashish.Authservice.model.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,9 +10,13 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class AuthResponse {
+public class LoginResponse {
 
+    private User user;
+    private String accessToken;
+    private String refreshToken;
     private String message;
     private int statusCode;
+
 
 }

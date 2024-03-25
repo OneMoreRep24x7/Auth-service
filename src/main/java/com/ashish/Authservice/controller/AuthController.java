@@ -2,8 +2,9 @@ package com.ashish.Authservice.controller;
 
 import com.ashish.Authservice.dto.AuthRequest;
 import com.ashish.Authservice.dto.AuthResponse;
+import com.ashish.Authservice.dto.LoginResponse;
 import com.ashish.Authservice.dto.RegisterRequest;
-import com.ashish.Authservice.service.AuthService;
+import com.ashish.Authservice.service.auth.AuthService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,18 +23,23 @@ public class AuthController {
     private AuthService authService;
 
     @PostMapping("/register")
-    public ResponseEntity<AuthResponse> register (
+    public ResponseEntity<?> register (
             @RequestBody RegisterRequest registerRequest
     ){
+        var response = authService.register(registerRequest);
 
-        return ResponseEntity.ok(authService.register(registerRequest));
+            return ResponseEntity.ok(response);
+
+
     }
     @PostMapping("/authenticate")
-    public ResponseEntity<AuthResponse> authenticate (
+    public ResponseEntity<LoginResponse> authenticate (
             @RequestBody AuthRequest authRequest
             ){
         return ResponseEntity.ok(authService.authenticate(authRequest));
     }
+
+
 
     @PostMapping("/refresh-token")
     public void refreshToken(
@@ -42,5 +48,7 @@ public class AuthController {
     ) throws IOException {
         authService.refreshToken(request, response);
     }
+
+
 
 }

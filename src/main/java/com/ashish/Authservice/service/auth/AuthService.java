@@ -1,7 +1,8 @@
-package com.ashish.Authservice.service;
+package com.ashish.Authservice.service.auth;
 
 import com.ashish.Authservice.dto.AuthRequest;
 import com.ashish.Authservice.dto.AuthResponse;
+import com.ashish.Authservice.dto.LoginResponse;
 import com.ashish.Authservice.dto.RegisterRequest;
 import com.ashish.Authservice.model.User;
 import jakarta.servlet.http.HttpServletRequest;
@@ -17,7 +18,9 @@ public interface AuthService {
 
     AuthResponse register(RegisterRequest registerRequest);
 
-    AuthResponse authenticate(AuthRequest authRequest);
+    LoginResponse authenticate(AuthRequest authRequest);
 
     void refreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException;
+
+
 }
