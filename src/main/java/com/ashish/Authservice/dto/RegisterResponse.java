@@ -10,14 +10,12 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class LoginResponse {
+public class RegisterResponse {
 
-    private User user;
-    private String accessToken;
-    private String refreshToken;
     private String message;
     private int statusCode;
+    private boolean isVerified;
+    private User user;
     private String role;
-
 
 }

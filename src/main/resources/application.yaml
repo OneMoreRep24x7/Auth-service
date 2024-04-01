@@ -3,6 +3,26 @@ spring:
     name: auth-service
   config:
     import: "optional:configserver:http://localhost:8888"
+  mail:
+    host: smtp.gmail.com
+    username: ashishs24199@gmail.com
+    port: 587
+    properties:
+      mail:
+        smtp:
+          starttls:
+            enable: true
+          auth: true
+    password: rvyeduwhujxpyosu
+
+
+  security:
+    oauth2:
+      resourceserver:
+        opaque-token:
+          introspection-uri: https://www.googleapis.com/
+          clientId: "978280718019-l21dm8ci058kr4gnn0oovocr4v619qpe.apps.googleusercontent.com"
+          clientSecret: "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"
 
 application:
   security:

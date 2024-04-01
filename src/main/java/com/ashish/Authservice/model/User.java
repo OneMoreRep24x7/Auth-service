@@ -1,5 +1,6 @@
 package com.ashish.Authservice.model;
 
+import com.ashish.Authservice.otp.model.Otp;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -27,8 +28,10 @@ public class User implements UserDetails {
     private String lastName;
     private String email;
     private String password;
-    private String phone;
-    private Boolean isActive;
+
+    private Boolean isVerified;
+    @OneToOne(cascade = CascadeType.ALL)
+    private Otp otp;
 
 
     @Enumerated(value = EnumType.STRING)

@@ -1,15 +1,13 @@
-package com.ashish.Authservice.dto;
+package com.ashish.Authservice.configuration.Oauth.dto;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@Builder
-@NoArgsConstructor
 @AllArgsConstructor
-public class TestResponse {
+@NoArgsConstructor
+public class MessageDto {
 
     private String message;
 }

@@ -1,9 +1,6 @@
-package com.ashish.Authservice.service.auth;
+package com.ashish.Authservice.service;
 
-import com.ashish.Authservice.dto.AuthRequest;
-import com.ashish.Authservice.dto.AuthResponse;
-import com.ashish.Authservice.dto.LoginResponse;
-import com.ashish.Authservice.dto.RegisterRequest;
+import com.ashish.Authservice.dto.*;
 import com.ashish.Authservice.model.User;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -16,11 +13,16 @@ public interface AuthService {
     public Optional<User> findUserByEmail(String email);
 
 
-    AuthResponse register(RegisterRequest registerRequest);
+    RegisterResponse register(RegisterRequest registerRequest);
 
-    LoginResponse authenticate(AuthRequest authRequest);
+    LoginResponse authenticate(LoginRequest loginRequest);
 
     void refreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException;
 
 
+    void validateToken(String token);
+
+    RegisterResponse verifyOtp(OtpRequest otpRequest);
+
+    RegisterResponse registerTrainer(RegisterRequest registerRequest);
 }

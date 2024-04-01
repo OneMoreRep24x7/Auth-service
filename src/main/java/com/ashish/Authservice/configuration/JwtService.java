@@ -28,6 +28,10 @@ public class JwtService {
     private long refreshExpiration;
 
     private static final Long JWT_EXPIRATION = 86400000L;
+
+    public void validateToken(final String token) {
+        Jwts.parserBuilder().setSigningKey(getSignInKey()).build().parseClaimsJws(token);
+    }
     public String generateToken(UserDetails userDetails) {
         return generateToken(new HashMap<>(), userDetails);
     }
