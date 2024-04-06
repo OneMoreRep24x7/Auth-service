@@ -7,6 +7,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
@@ -24,10 +25,12 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    private String fistName;
+    private String firstName;
     private String lastName;
     private String email;
     private String password;
+    private boolean isPremium;
+    private LocalDateTime trialValid;
 
     private Boolean isVerified;
     @OneToOne(cascade = CascadeType.ALL)

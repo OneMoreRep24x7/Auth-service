@@ -52,7 +52,6 @@
                                     .addLogoutHandler(logoutHandler)
                                     .logoutSuccessHandler(((request, response, authentication) -> SecurityContextHolder.clearContext()))
                     )
-                    .oauth2ResourceServer(c -> c.opaqueToken(Customizer.withDefaults()))
                     .build();
         }
 

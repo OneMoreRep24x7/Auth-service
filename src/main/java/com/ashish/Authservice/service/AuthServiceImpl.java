@@ -1,5 +1,6 @@
 package com.ashish.Authservice.service;
 
+import com.ashish.Authservice.configuration.AuthorityProxy;
 import com.ashish.Authservice.configuration.JwtService;
 import com.ashish.Authservice.dto.*;
 import com.ashish.Authservice.model.Role;
@@ -51,7 +52,8 @@ public class AuthServiceImpl implements AuthService {
     @Autowired
     private OtpService otpService;
 
-
+    @Autowired
+    private AuthorityProxy authorityProxy;
 
 
 
@@ -82,11 +84,13 @@ public class AuthServiceImpl implements AuthService {
 
         }
             var user = User.builder()
-                    .fistName(registerRequest.getFirstName())
+                    .firstName(registerRequest.getFirstName())
                     .lastName(registerRequest.getLastName())
                     .email(registerRequest.getEmail())
                     .password(passwordEncoder.encode(registerRequest.getPassword()))
                     .role(Role.USER)
+                    .isPremium(false)
+                    .trialValid(LocalDateTime.now().plusDays(6))
                     .build();
 
         var savedUser = userRepository.save(user);
@@ -121,11 +125,13 @@ public class AuthServiceImpl implements AuthService {
 
         }
         var user = User.builder()
-                .fistName(registerRequest.getFirstName())
+                .firstName(registerRequest.getFirstName())
                 .lastName(registerRequest.getLastName())
                 .email(registerRequest.getEmail())
                 .password(passwordEncoder.encode(registerRequest.getPassword()))
                 .role(Role.TRAINER)
+                .isPremium(false)
+                .trialValid(LocalDateTime.now().plusDays(6))
                 .build();
 
         var savedUser = userRepository.save(user);
@@ -158,8 +164,19 @@ public class AuthServiceImpl implements AuthService {
             //valid  for one day
             if( Duration.between(otp.getTime(),LocalDateTime.now()).getSeconds()<=86400){
                 user.setIsVerified(true);
-               User savedUser = userRepository.save(user);
+                User savedUser = userRepository.save(user);
                 otpRepository.delete(otp);
+                UserDto userDto = UserDto.builder()
+                        .id(savedUser.getId())
+                        .firstName(savedUser.getFirstName())
+                        .lastName(savedUser.getLastName())
+                        .email(savedUser.getEmail())
+                        .role(String.valueOf(savedUser.getRole()))
+                        .isPremium(false)
+                        .trialValid(savedUser.getTrialValid())
+                        .build();
+
+                authorityProxy.userRegistration(userDto);
 
                 return RegisterResponse.builder()
                         .message("Otp Verified successfully..")
@@ -272,7 +289,6 @@ public void refreshToken(
 }
 
 private void revokeAllUserTokens(User user) {
-
     var validUserTokens = tokenRepository.findAllValidTokenByUser(user.getId());
     if (validUserTokens.isEmpty())
         return;
@@ -281,6 +297,7 @@ private void revokeAllUserTokens(User user) {
         token.setRevoked(true);
     });
     tokenRepository.saveAll(validUserTokens);
+    tokenRepository.deleteExpiredAndRevokedTokensByUser(user.getId());
 }
 
 
