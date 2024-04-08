@@ -1,5 +1,6 @@
-package com.ashish.Authservice.configuration;
+package com.ashish.Authservice.configuration.feignClient;
 
+import com.ashish.Authservice.dto.TrainerDto;
 import com.ashish.Authservice.dto.UserDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -10,5 +11,8 @@ public interface AuthorityProxy {
 
     @PostMapping("/api/v1/user/register")
     public void userRegistration(@RequestBody UserDto userDto);
+
+    @PostMapping("/api/v1/trainer/register")
+    public void registerTrainer(@RequestBody TrainerDto trainerDto);
 
 }

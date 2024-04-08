@@ -1,6 +1,6 @@
 package com.ashish.Authservice.service;
 
-import com.ashish.Authservice.configuration.AuthorityProxy;
+import com.ashish.Authservice.configuration.feignClient.AuthorityProxy;
 import com.ashish.Authservice.configuration.JwtService;
 import com.ashish.Authservice.dto.*;
 import com.ashish.Authservice.model.Role;
@@ -166,17 +166,29 @@ public class AuthServiceImpl implements AuthService {
                 user.setIsVerified(true);
                 User savedUser = userRepository.save(user);
                 otpRepository.delete(otp);
-                UserDto userDto = UserDto.builder()
-                        .id(savedUser.getId())
-                        .firstName(savedUser.getFirstName())
-                        .lastName(savedUser.getLastName())
-                        .email(savedUser.getEmail())
-                        .role(String.valueOf(savedUser.getRole()))
-                        .isPremium(false)
-                        .trialValid(savedUser.getTrialValid())
-                        .build();
+                if(String.valueOf(savedUser.getRole())== "USER"){
+                    UserDto userDto = UserDto.builder()
+                            .id(savedUser.getId())
+                            .firstName(savedUser.getFirstName())
+                            .lastName(savedUser.getLastName())
+                            .email(savedUser.getEmail())
+                            .role(String.valueOf(savedUser.getRole()))
+                            .isPremium(false)
+                            .trialValid(savedUser.getTrialValid())
+                            .build();
 
-                authorityProxy.userRegistration(userDto);
+                    authorityProxy.userRegistration(userDto);
+                }else if (String.valueOf(savedUser.getRole())== "TRAINER"){
+                    TrainerDto trainerDto = TrainerDto.builder()
+                            .id(savedUser.getId())
+                            .firstName(savedUser.getFirstName())
+                            .lastName(savedUser.getLastName())
+                            .email(savedUser.getLastName())
+                            .role(String.valueOf(savedUser.getRole()))
+                            .build();
+                    authorityProxy.registerTrainer(trainerDto);
+                }
+
 
                 return RegisterResponse.builder()
                         .message("Otp Verified successfully..")
