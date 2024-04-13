@@ -30,7 +30,7 @@ import org.springframework.stereotype.Service;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Optional;
-
+import java.util.UUID;
 
 
 @Service
@@ -144,6 +144,21 @@ public class AuthServiceImpl implements AuthService {
                 .build();
     }
 
+    @Override
+    public void updatePayment(PaymentData paymentData) {
+        UUID userId = paymentData.getUserId();
+        User user = userRepository.findById(userId).get();
+        LocalDateTime now = LocalDateTime.now();
+        if(paymentData.getAmount() == 800){
+            user.setTrialValid(now.plusMonths(6));
+            user.setPremium(true);
+        }else{
+            user.setTrialValid(now.plusMonths(1));
+            user.setPremium(true);
+        }
+        userRepository.save(user);
+    }
+
     private void otpManagement(User user) {
         String otp = otpService.generateOtp();
         otpService.send(user.getEmail(), otp);
@@ -183,7 +198,7 @@ public class AuthServiceImpl implements AuthService {
                             .id(savedUser.getId())
                             .firstName(savedUser.getFirstName())
                             .lastName(savedUser.getLastName())
-                            .email(savedUser.getLastName())
+                            .email(savedUser.getEmail())
                             .role(String.valueOf(savedUser.getRole()))
                             .build();
                     authorityProxy.registerTrainer(trainerDto);

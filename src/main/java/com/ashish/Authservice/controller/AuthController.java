@@ -83,12 +83,12 @@ public class AuthController {
         return ResponseEntity.ok(authService.registerTrainer(registerRequest));
     }
 
-       @GetMapping("/test")
-       public ResponseEntity<TestResponse> test(){
+    @GetMapping("/test")
+    public ResponseEntity<TestResponse> test(){
         return ResponseEntity.ok(TestResponse.builder()
                         .message("Hello from test")
                         .build());
-       }
+    }
 
     @PostMapping("/verifyOtp")
     public ResponseEntity<RegisterResponse> verifyOtp(@RequestBody OtpRequest otpRequest){
@@ -115,6 +115,13 @@ public class AuthController {
     public String validateToken(@RequestParam("token") String token) {
         authService.validateToken(token);
         return "Token is valid";
+    }
+
+    @PostMapping("/updatePayment")
+    public void updatePayment(
+            @RequestBody PaymentData paymentData
+    ){
+        authService.updatePayment(paymentData);
     }
 
 

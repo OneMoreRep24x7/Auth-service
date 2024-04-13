@@ -25,4 +25,6 @@ public interface AuthService {
     RegisterResponse verifyOtp(OtpRequest otpRequest);
 
     RegisterResponse registerTrainer(RegisterRequest registerRequest);
+
+    void updatePayment(PaymentData paymentData);
 }
