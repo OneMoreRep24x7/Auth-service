@@ -1,6 +1,6 @@
 package com.ashish.Authservice.configuration;
 
-import com.ashish.Authservice.token.TokenRepository;
+
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,8 +11,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class LogoutService implements LogoutHandler {
-    @Autowired
-    private TokenRepository tokenRepository;
+
 
     @Override
     public void logout(
@@ -25,14 +24,9 @@ public class LogoutService implements LogoutHandler {
             return;
         }
         jwt = authHeader.substring(7);
-        var storedToken = tokenRepository.findByToken(jwt)
-                .orElse(null);
-        if (storedToken != null) {
-            storedToken.setExpired(true);
-            storedToken.setRevoked(true);
-            tokenRepository.save(storedToken);
-            SecurityContextHolder.clearContext();
-        }
+
+        SecurityContextHolder.clearContext();
+
 
     }
 }

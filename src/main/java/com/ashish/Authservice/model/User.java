@@ -3,6 +3,7 @@ package com.ashish.Authservice.model;
 import com.ashish.Authservice.otp.model.Otp;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.GenericGenerator;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -22,7 +23,8 @@ import java.util.UUID;
 public class User implements UserDetails {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
+    @GeneratedValue(generator = "uuid2")
+    @GenericGenerator(name = "uuid2",strategy = "uuid2")
     private UUID id;
 
     private String firstName;

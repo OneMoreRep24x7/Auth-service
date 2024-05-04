@@ -2,6 +2,7 @@ package com.ashish.Authservice.service;
 
 import com.ashish.Authservice.dto.*;
 import com.ashish.Authservice.model.User;
+import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -13,7 +14,7 @@ public interface AuthService {
     public Optional<User> findUserByEmail(String email);
 
 
-    RegisterResponse register(RegisterRequest registerRequest);
+    RegisterResponse register(RegisterRequest registerRequest) throws MessagingException;
 
     LoginResponse authenticate(LoginRequest loginRequest);
 
@@ -24,7 +25,7 @@ public interface AuthService {
 
     RegisterResponse verifyOtp(OtpRequest otpRequest);
 
-    RegisterResponse registerTrainer(RegisterRequest registerRequest);
+    RegisterResponse registerTrainer(RegisterRequest registerRequest) throws MessagingException;
 
     void updatePayment(PaymentData paymentData);
 }

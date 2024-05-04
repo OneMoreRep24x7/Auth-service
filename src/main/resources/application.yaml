@@ -16,6 +16,9 @@ spring:
     password: rvyeduwhujxpyosu
 
 
+
+
+
   security:
     oauth2:
       resourceserver:

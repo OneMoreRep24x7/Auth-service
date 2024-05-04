@@ -9,11 +9,9 @@ import com.ashish.Authservice.otp.model.Otp;
 import com.ashish.Authservice.otp.repository.OtpRepository;
 import com.ashish.Authservice.otp.utils.OtpService;
 import com.ashish.Authservice.repository.UserRepository;
-import com.ashish.Authservice.token.Token;
-import com.ashish.Authservice.token.TokenRepository;
-import com.ashish.Authservice.token.TokenType;
 import java.io.IOException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.apache.http.HttpHeaders;
@@ -46,8 +44,6 @@ public class AuthServiceImpl implements AuthService {
     @Autowired
     private PasswordEncoder passwordEncoder;
     @Autowired
-    private TokenRepository tokenRepository;
-    @Autowired
     private OtpRepository otpRepository;
     @Autowired
     private OtpService otpService;
@@ -63,7 +59,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public RegisterResponse register(RegisterRequest registerRequest) {
+    public RegisterResponse register(RegisterRequest registerRequest) throws MessagingException {
 
         Optional<User> optionalUser = userRepository.findByEmail(registerRequest.getEmail());
         if(optionalUser.isPresent()){
@@ -105,7 +101,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public RegisterResponse registerTrainer(RegisterRequest registerRequest) {
+    public RegisterResponse registerTrainer(RegisterRequest registerRequest) throws MessagingException {
         Optional<User> optionalUser = userRepository.findByEmail(registerRequest.getEmail());
         if(optionalUser.isPresent()){
             User user = optionalUser.get();
@@ -159,7 +155,7 @@ public class AuthServiceImpl implements AuthService {
         userRepository.save(user);
     }
 
-    private void otpManagement(User user) {
+    private void otpManagement(User user) throws MessagingException {
         String otp = otpService.generateOtp();
         otpService.send(user.getEmail(), otp);
         var generatedOtp = Otp.builder()
@@ -245,8 +241,6 @@ public class AuthServiceImpl implements AuthService {
             var user = userRepository.findByEmail(loginRequest.getEmail()).orElseThrow();
             var jwtToken = jwtService.generateToken(user);
             var refreshToken = jwtService.generateRefreshToken(user);
-            revokeAllUserTokens(user);
-            saveUserToken(user, jwtToken);
             return LoginResponse.builder()
                     .user(user)
                     .accessToken(jwtToken)
@@ -283,8 +277,6 @@ public void refreshToken(
                 .orElseThrow();
         if (jwtService.isTokenValid(refreshToken, user)) {
             var accessToken = jwtService.generateToken(user);
-            revokeAllUserTokens(user);
-            saveUserToken(user, accessToken);
             var authResponse = RegisterResponse.builder()
                     .message("")
                     .statusCode(1)
@@ -302,30 +294,9 @@ public void refreshToken(
 
 
 
-    private void saveUserToken(User user, String jwtToken) {
-    var token = Token.builder()
-            .user(user)
-            .token(jwtToken)
-            .tokenType(TokenType.BEARER)
-            .expired(false)
-            .revoked(false)
-            .build();
-    tokenRepository.save(token);
 
 
-}
 
-private void revokeAllUserTokens(User user) {
-    var validUserTokens = tokenRepository.findAllValidTokenByUser(user.getId());
-    if (validUserTokens.isEmpty())
-        return;
-    validUserTokens.forEach(token -> {
-        token.setExpired(true);
-        token.setRevoked(true);
-    });
-    tokenRepository.saveAll(validUserTokens);
-    tokenRepository.deleteExpiredAndRevokedTokensByUser(user.getId());
-}
 
 
 

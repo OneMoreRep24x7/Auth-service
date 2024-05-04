@@ -8,6 +8,7 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeReque
 import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeTokenRequest;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.gson.GsonFactory;
+import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,7 +69,7 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<?> register (
             @RequestBody RegisterRequest registerRequest
-    ){
+    ) throws MessagingException {
         var response = authService.register(registerRequest);
 
             return ResponseEntity.ok(response);
@@ -79,7 +80,7 @@ public class AuthController {
     @PostMapping("/registerTrainer")
     public ResponseEntity<RegisterResponse> registerTrainer(
             @RequestBody RegisterRequest registerRequest
-    ){
+    ) throws MessagingException {
         return ResponseEntity.ok(authService.registerTrainer(registerRequest));
     }
 

@@ -1,6 +1,6 @@
 package com.ashish.Authservice.configuration;
 
-import com.ashish.Authservice.token.TokenRepository;
+
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -24,8 +24,7 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
     private JwtService jwtService;
     @Autowired
     private UserDetailsService userDetailsService;
-    @Autowired
-    private TokenRepository tokenRepository;
+
     @Override
     protected void doFilterInternal(
             @NotNull  HttpServletRequest request,
@@ -43,10 +42,7 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
                 userEmail = jwtService.extractUserName(jwt); // need to extract it from the JWT Token
             if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = userDetailsService.loadUserByUsername(userEmail);
-            var isTokenValid = tokenRepository.findByToken(jwt)
-                    .map(token -> !token.isExpired() && !token.isRevoked())
-                    .orElse(false);
-            if (jwtService.isTokenValid(jwt, userDetails) && isTokenValid) {
+            if (jwtService.isTokenValid(jwt, userDetails) ) {
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                         userDetails,
                         null,
