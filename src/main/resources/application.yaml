@@ -2,7 +2,7 @@ spring:
   application:
     name: auth-service
   config:
-    import: "optional:configserver:http://localhost:8888"
+    import: "optional:configserver:http://3.109.184.195:8888"
   mail:
     host: smtp.gmail.com
     username: ashishs24199@gmail.com
