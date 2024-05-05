@@ -2,23 +2,37 @@ spring:
   application:
     name: auth-service
   config:
-    import: "optional:configserver:http://localhost:8888"
-  datasource:
-    url: jdbc:mysql://localhost:3306/auth?createDatabaseIfNotExist=true
-    username: root
-    password: Jeshma2022
-    jpa:
-      show-sql: true
-      hibernate:
-        ddl-auto: update
+    import: "optional:configserver:http://3.109.184.195:8888"
+  mail:
+    host: smtp.gmail.com
+    username: ashishs24199@gmail.com
+    port: 587
+    properties:
+      mail:
+        smtp:
+          starttls:
+            enable: true
+          auth: true
+    password: rvyeduwhujxpyosu
 
-eureka:
-  instance:
-    host: localhost
-  client:
-    service-url:
-      defaultZone: http://localhost:8761/eureka
 
-server:
-  port: 8080
+
+
+
+  security:
+    oauth2:
+      resourceserver:
+        opaque-token:
+          introspection-uri: https://www.googleapis.com/
+          clientId: "978280718019-l21dm8ci058kr4gnn0oovocr4v619qpe.apps.googleusercontent.com"
+          clientSecret: "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"
+
+application:
+  security:
+    jwt:
+      secret-key: 404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970
+      expiration: 86400000 # a day
+      refresh-token:
+        expiration: 604800000 # 7 days
+
 
