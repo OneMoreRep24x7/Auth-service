@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 
-@FeignClient(name = "authority-service",url ="http://3.111.235.72:8081")
+@FeignClient(name = "authority-service",url ="http://65.1.243.55:8081")
 public interface AuthorityProxy {
 
     @PostMapping("/api/v1/user/register")
